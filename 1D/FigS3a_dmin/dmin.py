@@ -4,8 +4,9 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import AutoMinorLocator
 from scipy.optimize import curve_fit
 import os
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import r2_score
 
-# --- styling once (not in loop) ---
 plt.rcParams.update({
     'font.size': 20,
     'axes.labelsize': 26,
@@ -28,15 +29,10 @@ plt.rcParams.update({
     'font.family': 'STIXGeneral',
 })
 
-in_path  = r"C:\Users\Mathijs Born\Downloads\run3.xlsx"
-out_dir  = r"C:\Users\Mathijs Born\OneDrive\Desktop\dmin_3"
+in_path  = r"C:\Users\User\File\run3.xlsx"
+out_dir  = r"C:\Users\User\File\dmin_3"
 os.makedirs(out_dir, exist_ok=True)
 df = pd.read_excel(in_path)
-
-
-import numpy as np
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import r2_score
 
 VORM_COL = "vorm"
 Y_COL    = "H^2/kappa"
@@ -157,4 +153,5 @@ plt.tight_layout()
 out_png = os.path.join(out_dir, f"dminW.png")
 plt.savefig(out_png, dpi=400, bbox_inches="tight")
 plt.close(fig)
+
 
