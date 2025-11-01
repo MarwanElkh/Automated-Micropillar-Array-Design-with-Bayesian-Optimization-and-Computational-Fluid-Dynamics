@@ -1,6 +1,6 @@
 from PIL import Image
-for i in range(1,5):
-    inpt = fr"C:\Users\Mathijs Born\Downloads\vmav{i}.jpg"
+for i in range(1,35):
+    inpt = fr"C:\Users\User\File\vmav{i}.jpg"
     base = Image.open(inpt).convert("RGBA")
     cell_w, cell_h = base.size
     even_row_tile = base.transpose(Image.FLIP_LEFT_RIGHT).transpose(Image.ROTATE_180)
