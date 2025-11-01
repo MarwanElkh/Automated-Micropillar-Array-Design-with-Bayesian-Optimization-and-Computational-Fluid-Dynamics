@@ -17,5 +17,6 @@ for i in range(1,35):
             y = r * (cell_h)
             out.paste(tile, (x, y), tile)
     out = out.convert("RGB")
-    outpt = fr"C:\Users\Mathijs Born\Downloads\vmav{i}_array.jpg"
+    outpt = fr"C:\Users\User\File\vmav{i}_array.jpg"
     out.save(outpt)
+
