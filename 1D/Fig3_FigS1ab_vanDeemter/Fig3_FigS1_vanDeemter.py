@@ -26,7 +26,7 @@ plt.rcParams.update({
     'mathtext.fontset': 'stix',
     'font.family': 'STIXGeneral',
 })
-in_path  = r"C:\Users\User\File\run4.xlsx"
+in_path  = r"C:\Users\User\File\run3.xlsx"
 out_dir  = r"C:\Users\User\File\vanDeemter1D"
 os.makedirs(out_dir, exist_ok=True)
 df = pd.read_excel(in_path)
@@ -73,4 +73,5 @@ for vorm, g in df.groupby("vorm"):
     out_png = os.path.join(out_dir, f"Deemter_{str(vorm)}.png")
     plt.savefig(out_png, dpi=400, bbox_inches="tight")
     plt.close(fig)
+
 
