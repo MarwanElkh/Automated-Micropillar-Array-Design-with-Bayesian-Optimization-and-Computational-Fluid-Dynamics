@@ -88,7 +88,6 @@ def deg2rad(x):
     return np.radians(x)
 def rad2deg(x):
     return np.degrees(x)
-
 ax2 = ax1.secondary_xaxis('top', functions=(deg2rad, rad2deg))
 ax2.set_xlabel(r'$\alpha \, (\mathrm{rad})$', labelpad=5)
 ax2.minorticks_on()
@@ -96,3 +95,4 @@ ax2.xaxis.set_minor_locator(AutoMinorLocator(4))
 plt.savefig(out, dpi=400)
 plt.show()
 plt.close()
+
