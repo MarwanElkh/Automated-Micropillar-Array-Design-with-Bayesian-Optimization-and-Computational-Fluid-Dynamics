@@ -31,7 +31,7 @@ plt.rcParams.update({
 })
 
 in_path  = r"C:\Users\User\File\run4.xlsx"
-out_dir  = r"C:\Users\User\File\dmin_3"
+out_dir  = r"C:\Users\User\File"
 os.makedirs(out_dir, exist_ok=True)
 df = pd.read_excel(in_path)
 VORM_COL = "vorm"
@@ -49,43 +49,29 @@ W_data = np.array(min_h2_kappa[W_COL].to_numpy(float))
 L_data = np.array(min_h2_kappa[L_COL].to_numpy(float))
 Kv_data = np.array(min_h2_kappa[KV_COL].to_numpy(float))
 
-def _ellipse_xy(t, a, b):
+def ellipse_xy(t, a, b):
     return np.array([b*np.cos(t), a*np.sin(t)])
-
-def dmin_ellipse_diag_numeric(a, b, L, W, coarse=181, local_starts=6):
-    T = np.linspace(0.0, 2*np.pi, coarse, endpoint=False)
+    
+def dmin2(a, b, L, W):
+    T = np.linspace(0.0, 2*np.pi, 200, endpoint=False)
     cosT, sinT = np.cos(T), np.sin(T)
-    # points ellipse 1
     X1, Y1 = b*cosT, a*sinT
-    # points ellipse 2 (décalée de (L,W))
     X2, Y2 = L + b*cosT, W + a*sinT
-
-    # distances au carré pour toutes paires (t_i, s_j) via broadcasting
-    # shape (coarse, coarse)
     DX = X1[:,None] - X2[None,:]
     DY = Y1[:,None] - Y2[None,:]
     D2 = DX*DX + DY*DY
-
-    # indices des meilleurs candidats (plus petites distances)
+    local_starts=
     flat_idx = np.argpartition(D2.ravel(), local_starts)[:local_starts]
     ti, sj = np.unravel_index(flat_idx, D2.shape)
     seeds = [(T[i], T[j]) for i,j in zip(ti, sj)]
-
-    # Ajoute aussi un seed "directionnel" raisonnable
-    # (point de l'ellipse le plus proche de la direction du centre)
-    # Ce n'est pas critique, mais ça aide parfois.
     if local_starts < 12:
-        # direction du vecteur centre-centre
         ang = np.arctan2(W/a, L/b)
         seeds.append((ang, ang))
-
-    # --- 2) affinement local (sans gradients)
     def obj(z):
         t, s = z
-        p1 = _ellipse_xy(t, a, b)
-        p2 = _ellipse_xy(s, a, b) + np.array([L, W])
-        return np.sum((p1 - p2)**2)  # on minimise la distance^2 (plus lisse)
-
+        p1 = ellipse_xy(t, a, b)
+        p2 = ellipse_xy(s, a, b) + np.array([L, W])
+        return np.sum((p1 - p2)**2)
     best = np.inf
     for t0, s0 in seeds:
         res = minimize(obj, x0=np.array([t0, s0]),
@@ -93,21 +79,16 @@ def dmin_ellipse_diag_numeric(a, b, L, W, coarse=181, local_starts=6):
                        options={"maxiter": 1000, "xatol": 1e-12, "fatol": 1e-12})
         if res.fun < best:
             best = res.fun
-
-    dmin = float(np.sqrt(max(0.0, best)))  # clamp num. safety
+    dmin = float(np.sqrt(max(0.0, best)))
     return dmin
-
-
-dmin_data = np.array([
-    dmin_ellipse_diag_numeric(a, b, L, W)
+    
+dmin2_data = np.array([
+    dmin2(a, b, L, W)
     for a, b, L, W in zip(a_data, b_data, L_data, W_data)
 ])
-
-
 kv = Kv_data
 dmin = dmin_data/W_data
 Wb =2*(W_data-a_data)/W_data
-
 y1 = np.array([])
 y2 = np.array([])
 x1 = np.array([])
@@ -119,7 +100,6 @@ for i in range(0,len(kv)):
     else:
         x2 = np.append(x2, dmin[i])
         y2 = np.append(y2, kv[i])
-
 fig, ax = plt.subplots(figsize=(10, 6.8))
 ax.minorticks_on()
 ax.yaxis.set_minor_locator(AutoMinorLocator(4))
@@ -137,10 +117,7 @@ for label in ax.get_xticklabels():
 for label in ax.get_yticklabels():
     if label.get_text() in ('0', '0.00', '0.0'):
         label.set_visible(False)
-
 plt.tight_layout()
 out_png = os.path.join(out_dir, f"dminW.png")
 plt.savefig(out_png, dpi=400, bbox_inches="tight")
 plt.close(fig)
-
-
