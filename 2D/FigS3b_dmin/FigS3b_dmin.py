@@ -4,8 +4,10 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import AutoMinorLocator
 from scipy.optimize import curve_fit
 import os
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import r2_score
+from scipy.optimize import minimize
 
-# --- styling once (not in loop) ---
 plt.rcParams.update({
     'font.size': 20,
     'axes.labelsize': 26,
@@ -28,22 +30,15 @@ plt.rcParams.update({
     'font.family': 'STIXGeneral',
 })
 
-in_path  = r"C:\Users\Mathijs Born\Downloads\run3.xlsx"
-out_dir  = r"C:\Users\Mathijs Born\OneDrive\Desktop\dmin_3"
+in_path  = r"C:\Users\User\File\run4.xlsx"
+out_dir  = r"C:\Users\User\File\dmin_3"
 os.makedirs(out_dir, exist_ok=True)
 df = pd.read_excel(in_path)
-
-
-import numpy as np
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import r2_score
-
 VORM_COL = "vorm"
 Y_COL    = "H^2/kappa"
 idx = df.groupby(VORM_COL)[Y_COL].idxmin()
 min_h2_kappa = df.loc[idx.to_numpy()].copy()
 KV_COL    = "kappa(m^2)"
-
 A_COL    = "a(µm)"
 B_COL    = "b(µm)"
 W_COL    = "d(µm)"
@@ -54,20 +49,10 @@ W_data = np.array(min_h2_kappa[W_COL].to_numpy(float))
 L_data = np.array(min_h2_kappa[L_COL].to_numpy(float))
 Kv_data = np.array(min_h2_kappa[KV_COL].to_numpy(float))
 
-import numpy as np
-from scipy.optimize import minimize
-
 def _ellipse_xy(t, a, b):
-    # Paramétrisation standard du bord : x = b cos t, y = a sin t
     return np.array([b*np.cos(t), a*np.sin(t)])
 
 def dmin_ellipse_diag_numeric(a, b, L, W, coarse=181, local_starts=6):
-    """
-    Distance minimale entre les bords de deux ellipses axis-alignées identiques
-    (a,b), centrées en (0,0) et (L,W). Retourne un scalaire >= 0.
-    Méthode : grille grossière (t,s) puis affinement local (Nelder-Mead).
-    """
-    # --- 1) grille grossière pour des bons points de départ
     T = np.linspace(0.0, 2*np.pi, coarse, endpoint=False)
     cosT, sinT = np.cos(T), np.sin(T)
     # points ellipse 1
@@ -157,4 +142,5 @@ plt.tight_layout()
 out_png = os.path.join(out_dir, f"dminW.png")
 plt.savefig(out_png, dpi=400, bbox_inches="tight")
 plt.close(fig)
+
 
