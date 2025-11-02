@@ -95,7 +95,3 @@ ax2.xaxis.set_minor_locator(AutoMinorLocator(4))
 plt.savefig(out, dpi=400)
 plt.show()
 plt.close()
-
-
-
-
