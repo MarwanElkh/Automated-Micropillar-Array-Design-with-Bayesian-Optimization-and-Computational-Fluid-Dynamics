@@ -31,7 +31,7 @@ plt.rcParams.update({
 })
 
 in_path  = r"C:\Users\User\File\run3.xlsx"
-out_dir  = r"C:\Users\User\File\dmin_3"
+out_dir  = r"C:\Users\User\File"
 os.makedirs(out_dir, exist_ok=True)
 df = pd.read_excel(in_path)
 VORM_COL = "vorm"
@@ -121,3 +121,4 @@ plt.tight_layout()
 out_png = os.path.join(out_dir, f"dminW.png")
 plt.savefig(out_png, dpi=400, bbox_inches="tight")
 plt.close(fig)
+
