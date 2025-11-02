@@ -31,7 +31,7 @@ plt.rcParams.update({
 })
 
 path = r"C:\Users\User\File\run3.xlsx"
-out  = r"C:\Users\User\File\run3E_zoom.png"
+out  = r"C:\Users\User\File\run3E.png"
 vorm_col = "vorm"
 E_col    = "H^2/kappa"
 alfa_col = "alfa"
@@ -41,30 +41,24 @@ alfa_data = []
 current_vorm = None
 min_E = math.inf
 min_alfa = None
-prev_vorm = None
 for _, row in df.iterrows():
     v = int(row[vorm_col])
     E = row[E_col]
-    a = row[alfa_col
+    a = row[alfa_col]
     if current_vorm is None:
-        # first row initializes state
         current_vorm = v
         min_E = E
         min_alfa = a
     elif v != current_vorm:
-        if prev_vorm is not None and v != prev_vorm + 1:
-            raise ValueError(f"vorm sequence broken: saw {prev_vorm} then {v}")
         y_E.append(min_E)
         alfa_data.append(min_alfa)
         current_vorm = v
         min_E = E
         min_alfa = a
     else:
-        # same vorm: track minimum
         if E < min_E:
             min_E = E
             min_alfa = a
-    prev_vorm = v
 if current_vorm is not None:
     y_E.append(min_E)
     alfa_data.append(min_alfa)
@@ -102,3 +96,4 @@ ax2.xaxis.set_minor_locator(AutoMinorLocator(4))
 plt.savefig(out, dpi=400)
 plt.show()
 plt.close()
+
