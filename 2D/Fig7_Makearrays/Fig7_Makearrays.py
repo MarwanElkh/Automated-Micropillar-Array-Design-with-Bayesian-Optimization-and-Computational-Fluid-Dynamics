@@ -1,6 +1,6 @@
 from PIL import Image
-for i in range(1,5):
-    inpt = fr"C:\Users\Mathijs Born\Downloads\vmav{i}.jpg"
+for i in range(1,59):
+    inpt = fr"C:\Users\User\File\vmav{i}.jpg"
     base = Image.open(inpt).convert("RGBA")
     cell_w, cell_h = base.size
     even_row_tile = base.transpose(Image.FLIP_LEFT_RIGHT).transpose(Image.ROTATE_180)
@@ -17,5 +17,5 @@ for i in range(1,5):
             y = r * (cell_h)
             out.paste(tile, (x, y), tile)
     out = out.convert("RGB")
-    outpt = fr"C:\Users\Mathijs Born\Downloads\vmav{i}_array.jpg"
+    outpt = fr"C:\Users\User\File\vmav{i}_array.jpg"
     out.save(outpt)
