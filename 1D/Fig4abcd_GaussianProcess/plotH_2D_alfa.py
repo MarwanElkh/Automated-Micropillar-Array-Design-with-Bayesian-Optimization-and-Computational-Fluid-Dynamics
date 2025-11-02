@@ -8,11 +8,10 @@ from matplotlib.ticker import AutoMinorLocator
 import pandas as pd
 import math
 plt.rcParams.update({
-    # --- Font sizes ---
-    'font.size': 20,          # Base font size
-    'axes.labelsize': 26,     # Axis label size
-    'xtick.labelsize': 22,    # X tick labels
-    'ytick.labelsize': 22,    # Y tick labels
+    'font.size': 20,
+    'axes.labelsize': 26,
+    'xtick.labelsize': 22,
+    'ytick.labelsize': 22,
     'legend.fontsize': 22,
     'xtick.major.width': 1.4,
     'ytick.major.width': 1.4,
@@ -25,9 +24,9 @@ plt.rcParams.update({
     'axes.linewidth': 1.4,
     'grid.linewidth': 1,
     'grid.alpha': 0.3,
-    'text.usetex': False,          # <-- turn off external LaTeX
-    'mathtext.fontset': 'stix',    # STIX math (Cambria-like)
-    'font.family': 'STIXGeneral',  # serif text to match
+    'text.usetex': False,
+    'mathtext.fontset': 'stix',
+    'font.family': 'STIXGeneral',
 })
 
 path = r"C:\Users\User\File\run3.xlsx"
@@ -42,6 +41,7 @@ current_vorm = None
 min_E = math.inf
 min_alfa = None
 for _, row in df.iterrows():
+    v = int(row[vorm_col])
     E = row[E_col]
     a = row[alfa_col]
     if current_vorm is None:
@@ -98,4 +98,5 @@ ax2.xaxis.set_minor_locator(AutoMinorLocator(4))
 plt.savefig(out, dpi=400)
 plt.show()
 plt.close()
+
 
