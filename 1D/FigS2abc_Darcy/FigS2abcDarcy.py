@@ -5,7 +5,6 @@ from matplotlib.ticker import AutoMinorLocator
 from scipy.optimize import curve_fit
 import os
 
-# --- styling once (not in loop) ---
 plt.rcParams.update({
     'font.size': 20,
     'axes.labelsize': 26,
@@ -92,4 +91,5 @@ for vorm, g in df.groupby("vorm"):
     plt.savefig(out_png, dpi=400, bbox_inches="tight")
     plt.close(fig)
     print(f"[{vorm}] saved: {out_png}")
+
 
