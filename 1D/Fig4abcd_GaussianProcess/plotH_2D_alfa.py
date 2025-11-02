@@ -64,7 +64,6 @@ if current_vorm is not None:
     alfa_data.append(min_alfa)
 alfa_data = np.array(alfa_data)  
 y_E = 10**6*np.array(y_E)  
-
 alfa_min = min(alfa_data)
 alfa_max = max(alfa_data)
 y_E_min = min(y_E)
@@ -74,8 +73,6 @@ X_test = np.linspace(alfa_min, alfa_max, num)
 model = GaussianProcessRegressor(kernel=1**2 * Matern(length_scale=1, nu=2.5) + WhiteKernel(noise_level=0.01), n_restarts_optimizer=2,normalize_y=True, random_state=0)
 model.fit(alfa_data.reshape(-1, 1), y_E)
 Z_pred, stdv_pred = model.predict(X_test.reshape(-1, 1), return_std=True)
-
-
 fig, ax1 = plt.subplots(figsize=(10, 6.8))
 ax1.minorticks_on()
 ax1.yaxis.set_minor_locator(AutoMinorLocator(4))
@@ -89,7 +86,6 @@ ax1.set_xlim(alfa_min,alfa_max)
 ax1.set_ylim(0.15,0.8)
 def deg2rad(x):
     return np.radians(x)
-
 def rad2deg(x):
     return np.degrees(x)
 ax2 = ax1.secondary_xaxis('top', functions=(deg2rad, rad2deg))
@@ -99,6 +95,7 @@ ax2.xaxis.set_minor_locator(AutoMinorLocator(4))
 plt.savefig(out, dpi=400)
 plt.show()
 plt.close()
+
 
 
 
