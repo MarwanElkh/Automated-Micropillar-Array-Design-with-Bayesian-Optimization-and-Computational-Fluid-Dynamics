@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -10,11 +9,10 @@ from matplotlib.ticker import AutoMinorLocator
 
 
 plt.rcParams.update({
-    # --- Font sizes ---
-    'font.size': 20,          # Base font size
-    'axes.labelsize': 26,     # Axis label size
-    'xtick.labelsize': 22,    # X tick labels
-    'ytick.labelsize': 22,    # Y tick labels
+    'font.size': 20,
+    'axes.labelsize': 26,
+    'xtick.labelsize': 22,
+    'ytick.labelsize': 22,
     'legend.fontsize': 22,
     'xtick.major.width': 1.4,
     'ytick.major.width': 1.4,
@@ -27,14 +25,13 @@ plt.rcParams.update({
     'axes.linewidth': 1.4,
     'grid.linewidth': 1,
     'grid.alpha': 0.3,
-    'text.usetex': False,          # <-- turn off external LaTeX
-    'mathtext.fontset': 'stix',    # STIX math (Cambria-like)
-    'font.family': 'STIXGeneral',  # serif text to match
+    'text.usetex': False,
+    'mathtext.fontset': 'stix',
+    'font.family': 'STIXGeneral',
 })
 
-
-PATH_EXCEL = r"C:\Users\Mathijs Born\Downloads\run4.xlsx"
-OUT_2D_PNG = r"C:\Users\Mathijs Born\OneDrive\Desktop\run4H.png"
+PATH_EXCEL = r"C:\Users\User\File\run4.xlsx"
+OUT_2D_PNG = r"C:\Users\User\File\run4H.png"
 VORM_COL = "vorm"
 A_COL    = "a(µm)"
 B_COL    = "b(µm)"
@@ -62,20 +59,16 @@ def invalid_mask(alpha_deg_grid, ratio_grid, e=0.5, W=2.0):
     denom = np.clip(denom, 1e-15, None)
     a = np.sqrt(L / denom)
     b = ratio_grid * a
-    return (L - b) < 0.0  # same rule as your snippet
+    return (L - b) < 0.0
 
 def main():
     df = pd.read_excel(PATH_EXCEL)
     for col in [VORM_COL, A_COL, B_COL, Y_COL]:
-        if col not in df.columns:
-            raise ValueError(f"Missing column '{col}' in Excel.")
     df = df.copy()
     df[A_COL] = pd.to_numeric(df[A_COL], errors="coerce")
     df[B_COL] = pd.to_numeric(df[B_COL], errors="coerce")
     df[Y_COL] = pd.to_numeric(df[Y_COL], errors="coerce")
     df = df.dropna(subset=[VORM_COL, A_COL, B_COL, Y_COL])
-    if df.empty:
-        raise ValueError("No valid rows after cleaning.")
     idx = df.groupby(VORM_COL)[Y_COL].idxmin()
     min_h2_kappa = df.loc[idx.to_numpy()].copy()
     a_data = min_h2_kappa[A_COL].to_numpy(float)
@@ -98,8 +91,6 @@ def main():
     pts = np.column_stack([R_samples, A_samples])
     Zg = griddata(pts, Z_samples, (Rg, Ag_deg), method="linear")
     valid = (~invalid_mask(Ag_deg, Rg)) & np.isfinite(Zg)
-    if not np.any(valid):
-        raise RuntimeError("All grid cells are invalid (mask + NaNs). Shrink mask or adjust (r, alpha) range.")
     zmin = Zg[valid].min()
     zmax = Zg[valid].max()
     if zmin == zmax:
@@ -110,7 +101,6 @@ def main():
     levels = np.linspace(zmin, zmax, 40)
     clevels = np.linspace(zmin, zmax, 200)
     norm = Normalize(vmin=zmin, vmax=zmax)
-    
     fig, ax1 = plt.subplots(figsize=(10, 6.8))
     ax1.minorticks_on()
     ax1.yaxis.set_minor_locator(AutoMinorLocator(4))
@@ -147,3 +137,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
