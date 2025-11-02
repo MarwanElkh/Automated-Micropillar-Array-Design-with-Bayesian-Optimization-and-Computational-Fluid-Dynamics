@@ -31,7 +31,7 @@ plt.rcParams.update({
 })
 
 PATH_EXCEL = r"C:\Users\User\File\run4.xlsx"
-OUT_2D_PNG = r"C:\Users\User\File"
+OUT_2D_PNG = r"C:\Users\User\File\run4E_zoom.png"
 VORM_COL = "vorm"
 A_COL    = "a(µm)"
 B_COL    = "b(µm)"
@@ -59,20 +59,16 @@ def invalid_mask(alpha_deg_grid, ratio_grid, e=0.5, W=2.0):
     denom = np.clip(denom, 1e-15, None)
     a = np.sqrt(L / denom)
     b = ratio_grid * a
-    return (L - b) < 0.0  # same rule as your snippet
+    return (L - b) < 0.0
 
 def main():
     df = pd.read_excel(PATH_EXCEL)
     for col in [VORM_COL, A_COL, B_COL, Y_COL]:
-        if col not in df.columns:
-            raise ValueError(f"Missing column '{col}' in Excel.")
     df = df.copy()
     df[A_COL] = pd.to_numeric(df[A_COL], errors="coerce")
     df[B_COL] = pd.to_numeric(df[B_COL], errors="coerce")
     df[Y_COL] = pd.to_numeric(df[Y_COL], errors="coerce")
     df = df.dropna(subset=[VORM_COL, A_COL, B_COL, Y_COL])
-    if df.empty:
-        raise ValueError("No valid rows after cleaning.")
     idx = df.groupby(VORM_COL)[Y_COL].idxmin()
     min_h2_kappa = df.loc[idx.to_numpy()].copy()
     a_data = min_h2_kappa[A_COL].to_numpy(float)
@@ -96,8 +92,6 @@ def main():
     Zg = griddata(pts, Z_samples, (Rg, Ag_deg), method="linear")
     mask = invalid_mask(Ag_deg, Rg)
     valid = (~invalid_mask(Ag_deg, Rg)) & np.isfinite(Zg)
-    if not np.any(valid):
-        raise RuntimeError("All grid cells are invalid (mask + NaNs). Shrink mask or adjust (r, alpha) range.")
     zmin = Zg[valid].min()
     zmax = Zg[valid].max()
     if zmin == zmax:
@@ -108,7 +102,6 @@ def main():
     levels = np.linspace(zmin, 7, 100)
     clevels = np.linspace(zmin, 2, 200)
     norm = Normalize(vmin=zmin, vmax=2)
-    
     fig, ax1 = plt.subplots(figsize=(10, 6.8))
     ax1.minorticks_on()
     ax1.yaxis.set_minor_locator(AutoMinorLocator(4))
@@ -143,4 +136,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
