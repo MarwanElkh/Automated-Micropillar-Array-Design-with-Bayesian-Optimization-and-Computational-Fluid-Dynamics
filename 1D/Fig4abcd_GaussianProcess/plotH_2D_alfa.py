@@ -30,54 +30,34 @@ plt.rcParams.update({
     'font.family': 'STIXGeneral',  # serif text to match
 })
 
-path = r"C:\Users\Mathijs Born\Downloads\run3.xlsx"
-out  = r"C:\Users\Mathijs Born\Desktop\run3H.png"
+path = r"C:\Users\User\File\run3.xlsx"
+out  = r"C:\Users\User\File\run3H.png"
 vorm_col = "vorm"
 E_col    = "H(m)"
 alfa_col = "alfa"
-
 df = pd.read_excel(path)
-
 y_E = []
 alfa_data = []
-
 current_vorm = None
 min_E = math.inf
 min_alfa = None
-
-prev_vorm = None
 for _, row in df.iterrows():
-    v = int(row[vorm_col])
     E = row[E_col]
     a = row[alfa_col]
-
     if current_vorm is None:
-        # first row initializes state
         current_vorm = v
         min_E = E
         min_alfa = a
     elif v != current_vorm:
-        # sanity: vorm must increase by 1
-        if prev_vorm is not None and v != prev_vorm + 1:
-            raise ValueError(f"vorm sequence broken: saw {prev_vorm} then {v}")
-
-        # push result for the completed vorm
         y_E.append(min_E)
         alfa_data.append(min_alfa)
-
-        # reset for new vorm
         current_vorm = v
         min_E = E
         min_alfa = a
     else:
-        # same vorm: track minimum
         if E < min_E:
             min_E = E
             min_alfa = a
-
-    prev_vorm = v
-
-# push the last vorm result
 if current_vorm is not None:
     y_E.append(min_E)
     alfa_data.append(min_alfa)
@@ -118,3 +98,4 @@ ax2.xaxis.set_minor_locator(AutoMinorLocator(4))
 plt.savefig(out, dpi=400)
 plt.show()
 plt.close()
+
