@@ -38,8 +38,8 @@ lb = [0.0001, 0.00001, 0.01, 0.99]
 ub = [1.00,   0.10,   100.0, 1.01]
 bounds = (lb, ub)
 for vorm, g in df.groupby("vorm"):
-    x = g["v"].to_numpy()
-    y = g["H_um"].to_numpy()
+    x = g["v_x,av(m/s)"].to_numpy()
+    y = (1e6) * g["H(m)"].to_numpy()
     order = np.argsort(x)
     x = x[order]
     y = y[order]
@@ -76,6 +76,7 @@ for vorm, g in df.groupby("vorm"):
     out_png = os.path.join(out_dir, f"Deemter_{vorm}.png")
     plt.savefig(out_png, dpi=400, bbox_inches="tight")
     plt.close(fig)
+
 
 
 
