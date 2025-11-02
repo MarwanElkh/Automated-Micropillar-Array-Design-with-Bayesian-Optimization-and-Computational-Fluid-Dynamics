@@ -73,7 +73,8 @@ for vorm, g in df.groupby("vorm"):
         if label.get_text() in ('0', '0.00', '0.0'):
             label.set_visible(False)
     plt.tight_layout()
-    out_png = os.path.join(out_dir, f"Deemter_{str(vorm)}.png")
+    out_png = os.path.join(out_dir, f"Deemter_{vorm}.png")
     plt.savefig(out_png, dpi=400, bbox_inches="tight")
     plt.close(fig)
+
 
